@@ -11,6 +11,7 @@ enum PhoneRoutes {
   teamGenerator,
   playerSetup,
   teamSetup,
+  teams,
   // Stats Pages
   statsBase,
   stats;
@@ -44,6 +45,8 @@ extension RouteNameOperations on PhoneRoutes {
         return 'player-setup';
       case PhoneRoutes.teamSetup:
         return 'team-setup';
+      case PhoneRoutes.teams:
+        return 'teams';
 
       // Stats Routes
       case PhoneRoutes.statsBase:

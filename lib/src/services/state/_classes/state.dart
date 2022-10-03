@@ -1,5 +1,3 @@
-import 'state_entry.dart';
-
 abstract class ModelState<T, U extends Object> {
   /// Retrieve current state
   Future<Map<String, T>> getState();

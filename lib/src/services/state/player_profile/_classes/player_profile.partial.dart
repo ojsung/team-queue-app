@@ -5,7 +5,9 @@ class PlayerProfilePartial extends Object {
     this.playerName,
     this.playerRating,
     required this.playerId,
-  });
+  }) {
+    print(playerId);
+  }
   String? playerName;
   int? playerRating;
   String playerId;

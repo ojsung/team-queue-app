@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:team_queue_app/src/services/state/player_profile/_classes/player_profile.partial.dart';
 
 import '../_classes/state_entry.dart';

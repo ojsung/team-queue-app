@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class StatsPage extends StatelessWidget {
   const StatsPage({Key? key, String? subroute})
@@ -11,9 +10,9 @@ class StatsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Stats'),
+        title: Text('Stats $_subroute'),
       ),
-      body: Center(
+      body: const Center(
         child: Text('idk probably some really cool graphs'),
       ),
     );

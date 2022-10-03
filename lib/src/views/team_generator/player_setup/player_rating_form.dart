@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:team_queue_app/src/views/widgets/disabled_button.dart';
 
 class PlayerRatingForm extends StatefulWidget {
-  PlayerRatingForm(
-      {Key? key, initialRating = 0, required void Function(int) saveRating})
+  const PlayerRatingForm(
+      {Key? key,
+      required int initialRating,
+      required void Function(int) saveRating})
       : _initialRating = initialRating,
         _saveRating = saveRating,
-        super(key: key) {
-    _initialRating;
-  }
+        super(key: key);
   final Function(int) _saveRating;
   final int _initialRating;
 
@@ -16,25 +17,31 @@ class PlayerRatingForm extends StatefulWidget {
 }
 
 class _PlayerRatingFormState extends State<PlayerRatingForm> {
-  int currentRating = 0;
+  int? currentRating;
   void _updateRating(int rating) {
-    currentRating = rating;
-    widget._saveRating(rating);
+    setState(() {
+      currentRating = rating;
+      widget._saveRating(rating);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    currentRating = widget._initialRating;
+    currentRating ??= widget._initialRating;
     return SizedBox(
       height: 24,
-      width: 130,
       child: Row(
         children: [
           for (var i = 1; i <= 10; i++)
-            RatingBar(
-              index: i,
-              updateRating: _updateRating,
-              currentRating: currentRating,
+            Expanded(
+              child: RatingBar(
+                index: i,
+                updateRating: () {
+                  debugPrint('called with $i');
+                  _updateRating(i);
+                },
+                currentRating: currentRating,
+              ),
             )
         ],
       ),
@@ -43,37 +50,57 @@ class _PlayerRatingFormState extends State<PlayerRatingForm> {
 }
 
 class RatingBar extends StatefulWidget {
-  RatingBar({
+  const RatingBar({
     Key? key,
     required int index,
-    required void Function(int) updateRating,
+    required VoidCallback updateRating,
     required currentRating,
   })  : _index = index,
         _updateRating = updateRating,
-        _backgroundColor = (_green + (_red - _green) * index / 10).floor(),
+        _currentRating = currentRating,
         super(key: key);
-  static const int _red = 0x00FF5733;
-  static const int _green = 0x0033FF57;
+  static const List<int> _red = [255, 87, 51, 1];
+  static const List<int> _green = [51, 255, 87, 1];
   final int _index;
-  final void Function(int) _updateRating;
-  final int _backgroundColor;
+  final VoidCallback _updateRating;
+  final int _currentRating;
 
   @override
   State<RatingBar> createState() => _RatingBarState();
 }
 
 class _RatingBarState extends State<RatingBar> {
+  late int currentRating;
+  late Color backgroundColor;
+
+  Color _calculateBackgroundColor() {
+    final int index = widget._index;
+    final int steps = index - 1;
+    const List<int> green = RatingBar._green;
+    const List<int> red = RatingBar._red;
+    final int rStep = green[0] + ((red[0] - green[0]) / 9 * steps).floor();
+    final int gStep = green[1] + ((red[1] - green[1]) / 9 * steps).floor();
+    final int bStep = green[2] + ((red[2] - green[2]) / 9 * steps).floor();
+    final Color backgroundColor = Color.fromRGBO(rStep, gStep, bStep, 1);
+    return backgroundColor;
+  }
+
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => widget._updateRating(widget._index),
+    currentRating = widget._currentRating;
+    backgroundColor = _calculateBackgroundColor();
+    Widget inkwell = InkWell(
+      onTap: () => widget._updateRating(),
       child: SizedBox(
         height: 24,
         width: 24,
         child: Container(
-          color: Color(widget._backgroundColor),
+          color: backgroundColor,
         ),
       ),
     );
+    return currentRating >= widget._index
+        ? inkwell
+        : DisabledButton(child: inkwell);
   }
 }

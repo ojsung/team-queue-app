@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:team_queue_app/src/configuration/navigation/phone_routes.dart';
-import 'package:team_queue_app/src/services/state/player_profile/player_profile_state.dart';
 import 'package:team_queue_app/src/views/stats/stats_page.dart';
 import 'package:team_queue_app/src/views/team_generator/team_generator_page.dart';
 

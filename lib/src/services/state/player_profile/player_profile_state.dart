@@ -60,8 +60,10 @@ class PlayerProfileState extends ChangeNotifier
       if (entry != null) {
         final PlayerProfile updatedValue = entry.update(partial: update);
         updatedEntries.add(updatedValue);
-        notifyListeners();
       }
+    }
+    if (updatedEntries.isNotEmpty) {
+      notifyListeners();
     }
     // do some bulk push up to api to notify of updates?
     return updatedEntries;
@@ -94,10 +96,11 @@ class PlayerProfileState extends ChangeNotifier
   @override
   Future<List<PlayerProfile>> upsert(
       {required List<PlayerProfile> values}) async {
+    bool alerted = false;
     List<PlayerProfile> entries = [];
+    List<PlayerProfile> shouldInsert = [];
     for (var value in values) {
       final String key = value.playerId;
-      _state.update(key, (value) => value.update(partial: value.toPartial()));
       if (_state.containsKey(key)) {
         final PlayerProfile entry = _state[key]!;
         final PlayerProfilePartial partial = PlayerProfilePartial(
@@ -106,11 +109,16 @@ class PlayerProfileState extends ChangeNotifier
             playerRating: value.playerRating);
         entries.add(entry.update(partial: partial));
       } else {
-        final PlayerProfile entry = (await insert(values: [value]))[0];
-        entries.add(entry);
+        shouldInsert.add(value);
       }
     }
-    notifyListeners();
+    if (shouldInsert.isNotEmpty) {
+      entries.addAll(await insert(values: shouldInsert));
+      alerted = true;
+    }
+    if (!alerted) {
+      notifyListeners();
+    }
     return entries;
   }
 
