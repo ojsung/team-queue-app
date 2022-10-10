@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:team_queue_app/src/configuration/navigation/phone_routes.dart';
-import 'package:team_queue_app/src/services/state/player_profile/player_profile_state.dart';
+import 'package:team_queue_app/src/services/state/player/player_state.dart';
 
 import 'player_setup/player_setup.dart';
 import 'team_setup/team_setup.dart';
@@ -13,7 +13,7 @@ class TeamGeneratorPage extends StatefulWidget {
         super(key: key);
   final String _subroute;
   final _navigatorKey = GlobalKey<NavigatorState>();
-  final PlayerProfileState _state = PlayerProfileState();
+  final PlayerState _state = PlayerState();
 
   void navToTeamSetup() {
     _navigatorKey.currentState?.pushNamed(PhoneRoutes.teamSetup.route);
@@ -52,7 +52,10 @@ class _TeamGeneratorPageState extends State<TeamGeneratorPage> {
                   );
               break;
             case 'team-setup':
-              builder = (BuildContext context) => TeamSetup(goBack: widget.navToPlayerSetup, goNext: widget.navToTeams,);
+              builder = (BuildContext context) => TeamSetup(
+                    goBack: widget.navToPlayerSetup,
+                    goNext: widget.navToTeams,
+                  );
               break;
             case 'teams':
               builder = (BuildContext context) => Teams();

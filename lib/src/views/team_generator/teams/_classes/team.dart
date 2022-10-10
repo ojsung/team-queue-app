@@ -1,7 +1,11 @@
-import 'package:team_queue_app/src/services/state/player_profile/_classes/player_profile.dart';
+import 'package:team_queue_app/src/services/state/player/_classes/player.dart';
+import 'package:team_queue_app/src/views/widgets/_classes/listable.dart';
 
-class Team {
-  Team({required this.name, required this.players});
+class Team implements Listable {
+  Team({required this.name, required this.players, required this.id});
+  @override
   final String name;
-  final List<PlayerProfile> players;
+  final List<Player> players;
+  @override
+  final String id;
 }

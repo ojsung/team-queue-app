@@ -3,44 +3,48 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:team_queue_app/src/services/state/_classes/state.dart';
-import 'package:team_queue_app/src/services/state/player_profile/_classes/player_profile.dart';
-import 'package:team_queue_app/src/services/state/player_profile/_classes/player_profile.partial.dart';
 
-class PlayerProfileState extends ChangeNotifier
-    implements ModelState<PlayerProfile, PlayerProfilePartial> {
+import '_classes/player.dart';
+import '_classes/player.partial.dart';
+
+class PlayerState extends ChangeNotifier
+    implements ModelState<Player, PlayerPartial> {
   // static and factory constructors
-  static PlayerProfileState? _playerProfileState;
-  factory PlayerProfileState() {
-    _playerProfileState ??= PlayerProfileState._build();
+  static PlayerState? _playerProfileState;
+  factory PlayerState() {
+    _playerProfileState ??= PlayerState._build();
     return _playerProfileState!;
   }
 
   // public static props
   //private static props
   // constructors
-  PlayerProfileState._build();
+  PlayerState._build();
 
   // public props
+  Map<String, Player> get currentState {
+    return _state;
+  }
   // private props
-  final Map<String, PlayerProfile> _state = {};
+  final Map<String, Player> _state = {};
 
   // public methods
   @override
-  Future<Map<String, PlayerProfile>> getState() async {
+  Future<Map<String, Player>> getState() async {
     return _state;
   }
 
   @override
-  Future<void> setState({required Map<String, PlayerProfile> newState}) async {
+  Future<void> setState({required Map<String, Player> newState}) async {
     _state.clear();
     _state.addAll(newState);
   }
 
   @override
-  Future<List<PlayerProfile>> select({required List<String> keys}) async {
-    final List<PlayerProfile> entries = [];
+  Future<List<Player>> select({required List<String> keys}) async {
+    final List<Player> entries = [];
     for (var key in keys) {
-      final PlayerProfile? profile = _state[key];
+      final Player? profile = _state[key];
       if (profile == null) {
         throw Exception('Accessing a key that does not exist: $key');
       } else {
@@ -51,14 +55,13 @@ class PlayerProfileState extends ChangeNotifier
   }
 
   @override
-  Future<List<PlayerProfile>> update(
-      {required List<PlayerProfilePartial> updates}) async {
-    final List<PlayerProfile> updatedEntries = [];
+  Future<List<Player>> update({required List<PlayerPartial> updates}) async {
+    final List<Player> updatedEntries = [];
     for (var update in updates) {
-      final String key = update.playerId;
-      final PlayerProfile? entry = _state[key];
+      final String key = update.id;
+      final Player? entry = _state[key];
       if (entry != null) {
-        final PlayerProfile updatedValue = entry.update(partial: update);
+        final Player updatedValue = entry.update(partial: update);
         updatedEntries.add(updatedValue);
       }
     }
@@ -70,11 +73,10 @@ class PlayerProfileState extends ChangeNotifier
   }
 
   @override
-  Future<List<PlayerProfile>> insert(
-      {required List<PlayerProfile> values}) async {
-    final List<PlayerProfile> newEntries = [];
+  Future<List<Player>> insert({required List<Player> values}) async {
+    final List<Player> newEntries = [];
     for (var value in values) {
-      _state.putIfAbsent(value.playerId, () {
+      _state.putIfAbsent(value.id, () {
         newEntries.add(value);
         return value;
       });
@@ -94,19 +96,16 @@ class PlayerProfileState extends ChangeNotifier
   }
 
   @override
-  Future<List<PlayerProfile>> upsert(
-      {required List<PlayerProfile> values}) async {
+  Future<List<Player>> upsert({required List<Player> values}) async {
     bool alerted = false;
-    List<PlayerProfile> entries = [];
-    List<PlayerProfile> shouldInsert = [];
+    List<Player> entries = [];
+    List<Player> shouldInsert = [];
     for (var value in values) {
-      final String key = value.playerId;
+      final String key = value.id;
       if (_state.containsKey(key)) {
-        final PlayerProfile entry = _state[key]!;
-        final PlayerProfilePartial partial = PlayerProfilePartial(
-            playerId: value.playerId,
-            playerName: value.playerName,
-            playerRating: value.playerRating);
+        final Player entry = _state[key]!;
+        final PlayerPartial partial =
+            PlayerPartial(id: value.id, name: value.name, rating: value.rating);
         entries.add(entry.update(partial: partial));
       } else {
         shouldInsert.add(value);

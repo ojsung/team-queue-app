@@ -38,6 +38,17 @@ class _NameFormState extends State<NameForm> {
         child: TextField(
           controller: textController,
           focusNode: focusNode,
+          decoration: const InputDecoration(
+            contentPadding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+            isDense: true,
+          ),
+          inputFormatters: [
+            LengthLimitingTextInputFormatter(20),
+          ],
+          maxLines: 1,
+          style: const TextStyle(
+            fontSize: 14,
+          ),
           autocorrect: false,
         ),
         onFocusChange: (isFocused) {

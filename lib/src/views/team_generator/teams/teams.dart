@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:team_queue_app/src/services/state/player_profile/_classes/player_profile.dart';
+import 'package:team_queue_app/src/services/state/player/_classes/player.dart';
 
 import '_classes/team.dart';
 
@@ -12,37 +12,44 @@ class Teams extends StatefulWidget {
 
 class _TeamsState extends State<Teams> {
   @override
-  final Team team1 = Team(name: 'Dummy Team 1', players: [
-    PlayerProfile(playerName: 'dummy 1', playerRating: 1, playerId: '1234'),
-    PlayerProfile(playerName: 'dummy 2', playerRating: 1, playerId: '32345'),
-    PlayerProfile(playerName: 'dummy 3', playerRating: 1, playerId: '36546345')
+  final Team team1 = Team(id: 'dummy1', name: 'Dummy Team 1', players: [
+    Player(name: 'dummy 1', rating: 1, id: '1234'),
+    Player(name: 'dummy 2', rating: 1, id: '32345'),
+    Player(name: 'dummy 3', rating: 1, id: '36546345')
   ]);
-  final Team team2 = Team(name: 'Dummy Team 2', players: [
-    PlayerProfile(
-        playerId: 'asdf', playerRating: 2, playerName: 'ttergsgdfsfer'),
-    PlayerProfile(playerName: 'asdfqwer', playerId: '343wert', playerRating: 3),
-    PlayerProfile(playerId: '1234', playerName: 'grqwesdafggq', playerRating: 4)
+  final Team team2 = Team(id: 'dummy2', name: 'Dummy Team 2', players: [
+    Player(id: 'asdf', rating: 2, name: 'ttergsgdfsfer'),
+    Player(name: 'asdfqwer', id: '343wert', rating: 3),
+    Player(id: '1234', name: 'grqwesdafggq', rating: 4)
   ]);
   final List<Team> teams = [];
+  @override
   Widget build(BuildContext context) {
     teams.add(team1);
     teams.add(team2);
     return ListView(
       shrinkWrap: true,
       children: [
-      for (var team in teams)
-      Column(children: [
-        Text(team.name),
-        ListView(
-          shrinkWrap: true,
-          children: [
-          for (var member in team.players)
-          Container(child: Row(children: [
-            Text(member.playerName),
-            Text(member.playerRating.toString())
-          ],)) 
-        ],)
-      ],)
-    ],);
+        for (var team in teams)
+          Column(
+            children: [
+              Text(team.name),
+              ListView(
+                shrinkWrap: true,
+                children: [
+                  for (var member in team.players)
+                    Container(
+                        child: Row(
+                      children: [
+                        Text(member.name),
+                        Text(member.rating.toString())
+                      ],
+                    ))
+                ],
+              )
+            ],
+          )
+      ],
+    );
   }
 }
